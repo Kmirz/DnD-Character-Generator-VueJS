@@ -12,10 +12,10 @@ import * as bootstrap from "bootstrap";
 
 <style lang="scss">
 :root {
-  --primary: #4ade80;
+  --primary: red;
   --primary-alt: #22c55e;
   --grey: #64748b;
-  --dark: #1e293b;
+  --dark: black;
   --dark-alt: #334155;
   --light: #f1f5f9;
   --sidebar-width: 300px;
@@ -24,7 +24,7 @@ import * as bootstrap from "bootstrap";
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Fira sans", sans-serif;
+  font-family: "Press Start 2P", cursive;
 }
 body {
   background: var(--light);
