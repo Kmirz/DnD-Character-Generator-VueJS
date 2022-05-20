@@ -20,7 +20,7 @@
         <span class="text">About</span>
       </router-link>
     </div>
-    <div class="settings"></div>
+    <!-- <div class="settings"></div> -->
     <div class="menu">
       <router-link class="button" to="/settings">
         <span class="material-icons material-icons-round"> settings </span>
@@ -88,10 +88,8 @@ aside {
     }
   }
 
-  @media (max-width: 768px) {
-    position: fixed;
-    z-index: 99;
-  }
+  position: fixed;
+  z-index: 99;
 }
 
 h3,

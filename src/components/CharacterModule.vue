@@ -1,49 +1,11 @@
 <template>
+  <Modal :itemContents="itemContents" :itemName="itemName" />
   <div class="container">
     <h1>DnD Character Generator!</h1>
     <h2 style="padding: 10px">Choose your class and see what you get</h2>
-    <dialog class="nes-dialog" id="dialog-default">
-      <form method="dialog">
-        <p class="title">{{ itemName }}</p>
-        <p>{{ itemContents }}</p>
-        <menu class="dialog-menu">
-          <button class="nes nes-btn is-primary">cool!</button>
-        </menu>
-      </form>
-    </dialog>
-    <div class="nes nes-container is-rounded">
-      <div
-        class="classSelector d-flex justify-content-center align-items-center"
-      >
-        <button
-          @click="clickLeft"
-          class="nes nes-btn is-error selection-button"
-        >
-          <span
-            class="material-icons-round material-icons"
-            style="font-size: 30px"
-          >
-            arrow_left
-          </span>
-        </button>
-        <img :src="imageReference" alt="" />
-        <button
-          @click="clickRight"
-          class="nes nes-btn is-error selection-button"
-        >
-          <span
-            class="material-icons-round material-icons"
-            style="font-size: 30px"
-          >
-            arrow_right
-          </span>
-        </button>
-      </div>
 
-      <p style="text-align: center" class="characterClass">
-        You have chosen a
-        <span style="color: red"> {{ selectedCharacterName }}!</span>
-      </p>
+    <div class="nes nes-container is-rounded">
+      <ClassSelector @classSelected="setClass" />
       <p>
         <label for="nestextarea_field" class="nes">Your cool hero name: </label>
         <textarea
@@ -51,14 +13,14 @@
           class="nes nes-textarea heroName"
         ></textarea>
       </p>
-      <label for="Proficiencies"> Proficiencies </label>
-      <div class="nes text-container nes-container is-rounded">
-        <ul>
-          <li v-for="proficiency in proficiencyList" :key="proficiency">
-            <ListContent @showModal="updateModal" :itemName="proficiency" />
-          </li>
-        </ul>
-      </div>
+
+      <StatBoxes :statValues="statValues" />
+
+      <ProficienciesList
+        :numProfficiences="numProfficiences"
+        :className="className"
+        @showModal="updateModal"
+      />
       <div class="d-flex justify-content-center mt-5">
         <button @click="rollStats" class="nes nes-btn">ROLL</button>
       </div>
@@ -68,75 +30,64 @@
 
 <script>
 import { ref } from "vue";
-import ListContent from "./ListContent.vue";
+
+import Modal from "./Modal.vue";
+import ClassSelector from "./ClassSelector.vue";
+import ProficienciesList from "./ProficienciesList.vue";
+import StatBoxes from "./StatBoxes.vue";
+
 export default {
   name: "CharacterModule",
-  components: { ListContent },
+  components: { Modal, ClassSelector, ProficienciesList, StatBoxes },
   setup() {
-    const imageReference = ref("./dnd-icons/Barbarian.PNG");
-    let characterSelected = 0;
-    const selectedCharacterName = ref("");
-
-    const proficiencyList = ref(["medium-armor", "bagpipes"]);
-
-    const itemName = ref("No Data");
+    const className = ref("No Data");
     const itemContents = ref("No Data");
 
-    const characterReferences = [
-      {
-        name: "Barbarian",
-        image: "./dnd-icons/Barbarian.PNG",
-      },
-      {
-        name: "Bard",
-        image: "./dnd-icons/Bard.PNG",
-      },
-    ];
+    const itemName = ref("No Data");
 
-    function clickRight() {
-      console.log("right button clicked");
-      if (characterSelected === characterReferences.length - 1) {
-        characterSelected = 0;
-      } else {
-        characterSelected++;
-      }
+    const numProfficiences = ref(2);
 
-      imageReference.value = characterReferences[characterSelected].image;
-      selectedCharacterName.value = characterReferences[characterSelected].name;
-    }
-
-    function clickLeft() {
-      console.log("left button clicked");
-
-      if (characterSelected === 0) {
-        characterSelected = characterReferences.length - 1;
-      } else {
-        characterSelected--;
-      }
-
-      imageReference.value = characterReferences[characterSelected].image;
-      selectedCharacterName.value = characterReferences[characterSelected].name;
-    }
+    const statValues = ref([]);
 
     function rollStats() {
-      console.log("clicked");
+      // console.log("clicked");
+      statValues.value = generateStats();
     }
 
-    function updateModal(itemNameModal, contents) {
-      itemName.value = itemNameModal;
-      itemContents.value = contents;
+    function generateStats() {
+      let statValues = [];
+
+      for (let i = 0; i < 6; i++) {
+        statValues.push(Math.floor(Math.random() * 5));
+      }
+
+      return statValues;
     }
+
+    function updateModal(itemInfo) {
+      // console.log(itemInfo);
+      itemName.value = itemInfo.itemName;
+      itemContents.value = itemInfo.contents
+        ? itemInfo.contents
+        : "No Description Available";
+    }
+
+    function setClass(classDetails) {
+      className.value = classDetails.name;
+      numProfficiences.value = classDetails.numProfficiences;
+      // console.log(className);
+    }
+
     // expose to template and other options API hooks
     return {
-      imageReference,
-      clickRight,
-      clickLeft,
-      selectedCharacterName,
       rollStats,
-      proficiencyList,
       itemContents,
-      itemName,
+      className,
       updateModal,
+      setClass,
+      numProfficiences,
+      itemName,
+      statValues,
     };
   },
 };
@@ -159,44 +110,13 @@ ul li:before {
   max-height: 150px;
   overflow-y: auto;
 }
-.heroName {
-  height: 50px;
-}
-.classDescription {
-  vertical-align: middle;
-}
-.classSelector {
-  align-content: center;
-}
-
-.selection-button {
-  height: 50px;
-}
-
-.characterClass.span {
-  font-family: "Press Start 2P", cursive;
-}
-
-img {
-  height: 250px;
-  width: 180px;
-}
 
 .nes {
   border-image-repeat: unset;
-  font-family: "Press Start 2P", cursive;
-}
-
-.nes-textarea {
-  /* height: 500px; */
-  max-height: 200px;
 }
 
 h1,
 h2 {
-  border-image-repeat: unset;
-  font-family: "Press Start 2P", cursive;
-  flex: 100%;
   text-align: center;
 }
 
@@ -204,7 +124,7 @@ h2 {
   font-size: 15px;
 }
 
-.nes-dialog {
-  margin: auto;
+.heroName {
+  height: 50px;
 }
 </style>

@@ -18,7 +18,7 @@ export default {
     itemName: String,
   },
   setup(props, context) {
-    const contents = ref("No description Available");
+    const contents = ref("No Description Available");
     const title = ref("No Info");
     const showModal = ref(true);
     // expose to template and other options API hooks
@@ -27,7 +27,7 @@ export default {
       //Obtain content reference from API
       let initialURL = "https://www.dnd5eapi.co/api/proficiencies/" + itemName;
 
-      console.log(initialURL);
+      // console.log(initialURL);
 
       let referenceURL = "";
       const proficiencyReference = await fetch(initialURL)
@@ -38,16 +38,19 @@ export default {
       //Obtain contents from API
       referenceURL = "https://www.dnd5eapi.co" + referenceURL;
 
-      console.log(referenceURL);
+      // console.log(referenceURL);
 
       const proficiencyContent = await fetch(referenceURL)
         .then((res) => res.json())
         .then((res) => (contents.value = res.desc[0]))
         .catch((err) => console.log(err));
 
-      console.log(contents.value);
+      // console.log(contents.value);
 
-      context.emit("showModal", itemName, contents.value);
+      context.emit("showModal", {
+        itemName: itemName,
+        contents: contents.value,
+      });
 
       document.getElementById("dialog-default").showModal();
     }
@@ -68,6 +71,5 @@ export default {
 
 .nes {
   border-image-repeat: unset;
-  font-family: "Press Start 2P", cursive;
 }
 </style>
