@@ -25,7 +25,7 @@ import * as bootstrap from "bootstrap";
   padding: 0;
   box-sizing: border-box;
   font-family: "Press Start 2P", cursive;
-  border-image-repeat: unset;
+  border-image-repeat: unset !important;
 }
 body {
   background: var(--light);

@@ -5,15 +5,35 @@
     <h2 style="padding: 10px">Choose your class and see what you get</h2>
 
     <div class="nes nes-container is-rounded">
-      <ClassSelector @classSelected="setClass" />
-      <p>
-        <label for="nestextarea_field" class="nes">Your cool hero name: </label>
-        <textarea
-          id="textarea_field"
-          class="nes nes-textarea heroName"
-        ></textarea>
-      </p>
+      <div class="row">
+        <ClassSelector class="col-md-6" @classSelected="setClass" />
+        <div class="inputWrapper col-md-6 my-auto">
+          <p>
+            <label for="nestextarea_field" class="nes"
+              >Your cool hero name:
+            </label>
+            <textarea
+              id="textarea_field"
+              v-model="characterName"
+              class="nes nes-textarea heroName"
+            ></textarea>
+          </p>
 
+          <label for="default_select">Select your race: </label>
+          <div class="nes nes-select mb-5">
+            <select
+              v-model="characterRace"
+              required
+              id="default_select"
+              class="nes"
+            >
+              <option value="" disabled selected hidden>Select...</option>
+              <option value="0">Elf</option>
+              <option value="1">Human</option>
+            </select>
+          </div>
+        </div>
+      </div>
       <StatBoxes :statValues="statValues" />
 
       <ProficienciesList
@@ -29,7 +49,7 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 
 import Modal from "./Modal.vue";
 import ClassSelector from "./ClassSelector.vue";
@@ -40,7 +60,22 @@ export default {
   name: "CharacterModule",
   components: { Modal, ClassSelector, ProficienciesList, StatBoxes },
   setup() {
-    const className = ref("No Data");
+    const characterName = ref("");
+
+    onMounted(() => {
+      let sampleNames = [
+        "Jerimiah Jones",
+        "Ashleigh The DoomBringer",
+        "Juliet 'The Destroyer' Thompson",
+        "Jamie 'Starwalker' Picard",
+        "Katy 'The Captain' Janeway",
+      ];
+
+      characterName.value =
+        sampleNames[Math.floor(Math.random() * sampleNames.length)];
+    });
+
+    const className = ref("Barbarian");
     const itemContents = ref("No Data");
 
     const itemName = ref("No Data");
@@ -88,12 +123,17 @@ export default {
       numProfficiences,
       itemName,
       statValues,
+      characterName,
     };
   },
 };
 </script>
 
 <style scoped>
+.nes-select::after {
+  border-image-repeat: unset;
+}
+
 ul {
   position: relative;
   list-style: none;
@@ -122,9 +162,5 @@ h2 {
 
 h2 {
   font-size: 15px;
-}
-
-.heroName {
-  height: 50px;
 }
 </style>

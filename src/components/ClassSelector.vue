@@ -1,22 +1,30 @@
 <template>
-  <div class="classSelector d-flex justify-content-center align-items-center">
-    <button @click="clickLeft" class="nes nes-btn is-error selection-button">
-      <span class="material-icons-round material-icons" style="font-size: 30px">
-        arrow_left
-      </span>
-    </button>
-    <img :src="imageReference" alt="" />
-    <button @click="clickRight" class="nes nes-btn is-error selection-button">
-      <span class="material-icons-round material-icons" style="font-size: 30px">
-        arrow_right
-      </span>
-    </button>
-  </div>
+  <div class="classSelectorWrapper">
+    <div class="classSelector d-flex justify-content-center align-items-center">
+      <button @click="clickLeft" class="nes nes-btn is-error selection-button">
+        <span
+          class="material-icons-round material-icons"
+          style="font-size: 30px"
+        >
+          arrow_left
+        </span>
+      </button>
+      <img :src="imageReference" alt="" />
+      <button @click="clickRight" class="nes nes-btn is-error selection-button">
+        <span
+          class="material-icons-round material-icons"
+          style="font-size: 30px"
+        >
+          arrow_right
+        </span>
+      </button>
+    </div>
 
-  <p style="text-align: center" class="characterClass">
-    You have chosen a
-    <span style="color: red"> {{ selectedCharacterName }}!</span>
-  </p>
+    <p style="text-align: center" class="characterClass">
+      You have chosen a
+      <span style="color: red"> {{ selectedCharacterName }}!</span>
+    </p>
+  </div>
 </template>
 
 <script>

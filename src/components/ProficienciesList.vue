@@ -18,7 +18,10 @@ import ListContent from "./ListContent.vue";
 
 export default {
   name: "ProficienciesList",
-  props: { numProfficiences: Number, className: String },
+  props: {
+    numProfficiences: { type: Number, default: 3 },
+    className: { type: String, default: "Barbarian" },
+  },
   components: { ListContent },
   emits: ["showModal"],
   setup(props) {
@@ -31,6 +34,8 @@ export default {
 
     watchEffect(() => {
       //   console.log(`name is: ` + props.numProfficiences);
+      // console.log(props.numProfficiences);
+      // console.log(props.className);
       generateProfficienciesList(props.numProfficiences, props.className);
     });
 
@@ -80,5 +85,8 @@ export default {
 <style scoped>
 .nes {
   border-image-repeat: unset;
+}
+label {
+  margin-top: 10px;
 }
 </style>
