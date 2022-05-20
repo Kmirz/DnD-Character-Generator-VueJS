@@ -35,10 +35,6 @@
           </div>
         </div>
       </div>
-      <StatBoxes
-        class="d-flex justify-content-center"
-        :statValues="statValues"
-      />
 
       <ProficienciesList
         :numProfficiences="numProfficiences"
@@ -46,8 +42,15 @@
         @showModal="updateModal"
       />
       <div class="d-flex justify-content-center mt-5">
-        <button @click="rollStats" class="nes nes-btn">ROLL</button>
+        <button @click="rollStats" class="nes nes-btn is-primary">
+          ROLL STATS!
+        </button>
       </div>
+
+      <StatBoxes
+        class="d-flex my-5 justify-content-center"
+        :statValues="statValues"
+      />
     </div>
   </div>
 </template>
@@ -153,6 +156,12 @@ ul li:before {
 @media (min-width: 768px) {
   .heroName {
     height: 100px;
+  }
+}
+
+@media (max-width: 768px) {
+  .heroName {
+    height: 170px;
   }
 }
 

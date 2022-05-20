@@ -1,5 +1,5 @@
 <template>
-  <div class="nes nes-container with-title is-centered is-dark m-2 col-lg">
+  <div class="nes nes-container with-title is-centered is-dark m-2 col-5">
     <p class="title">
       {{ stat }}
     </p>

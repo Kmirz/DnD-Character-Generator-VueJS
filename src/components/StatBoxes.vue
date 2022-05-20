@@ -3,6 +3,7 @@
     <Statbox :value="statValues[0]" :stat="'INT'" />
     <Statbox :value="statValues[1]" :stat="'STR'" />
     <Statbox :value="statValues[2]" :stat="'WIS'" />
+    <div class="w-100 d-xl-none d-none d-lg-block"></div>
     <Statbox :value="statValues[3]" :stat="'DEX'" />
     <Statbox :value="statValues[4]" :stat="'CON'" />
     <Statbox :value="statValues[5]" :stat="'CHA'" />
