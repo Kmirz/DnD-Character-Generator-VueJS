@@ -38,15 +38,12 @@ button {
   background: none;
 }
 .app {
-  display: flex;
   main {
-    flex: 1 1 0;
     padding: 2rem;
+    padding-left: 6rem;
 
     @media (max-width: 768px) {
-      position: absolute;
       z-index: -1;
-      padding-left: 6rem;
     }
   }
 }

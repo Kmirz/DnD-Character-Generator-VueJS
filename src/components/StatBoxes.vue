@@ -1,5 +1,5 @@
 <template>
-  <div class="stats mx-auto">
+  <div class="stats row">
     <Statbox :value="statValues[0]" :stat="'INT'" />
     <Statbox :value="statValues[1]" :stat="'STR'" />
     <Statbox :value="statValues[2]" :stat="'WIS'" />
@@ -29,10 +29,10 @@ export default {
 </script>
 
 <style scoped>
-.stats {
+/* .stats {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 10px;
   max-width: 600px;
-}
+} */
 </style>

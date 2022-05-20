@@ -1,5 +1,5 @@
 <template>
-  <div class="nes nes-container with-title is-centered is-dark">
+  <div class="nes nes-container with-title is-centered is-dark m-2 col-lg">
     <p class="title">
       {{ stat }}
     </p>
@@ -17,5 +17,6 @@ export default {
 <style scoped>
 .nes {
   border-image-repeat: unset;
+  max-width: 150px;
 }
 </style>

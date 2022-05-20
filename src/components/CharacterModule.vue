@@ -1,5 +1,6 @@
 <template>
   <Modal :itemContents="itemContents" :itemName="itemName" />
+
   <div class="container">
     <h1>DnD Character Generator!</h1>
     <h2 style="padding: 10px">Choose your class and see what you get</h2>
@@ -34,7 +35,10 @@
           </div>
         </div>
       </div>
-      <StatBoxes :statValues="statValues" />
+      <StatBoxes
+        class="d-flex justify-content-center"
+        :statValues="statValues"
+      />
 
       <ProficienciesList
         :numProfficiences="numProfficiences"
@@ -134,7 +138,7 @@ export default {
   border-image-repeat: unset;
 }
 
-ul {
+heroName ul {
   position: relative;
   list-style: none;
   margin-left: 0;
@@ -144,6 +148,12 @@ ul li:before {
   content: "-";
   position: absolute;
   left: 0;
+}
+
+@media (min-width: 768px) {
+  .heroName {
+    height: 100px;
+  }
 }
 
 .text-container {
