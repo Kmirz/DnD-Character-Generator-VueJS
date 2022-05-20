@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex align-items-center">
+  <div class="items">
     {{ itemName }}
     <button
       type="button"
@@ -61,6 +61,12 @@ export default {
 </script>
 
 <style scoped>
+@media (max-width: 500px) {
+  .items {
+    font-size: 10px;
+  }
+}
+
 .small-button {
   height: 10px;
   width: 10px;

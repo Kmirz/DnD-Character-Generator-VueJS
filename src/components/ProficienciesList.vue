@@ -89,4 +89,9 @@ export default {
 label {
   margin-top: 10px;
 }
+
+ul {
+  padding: 0;
+  display: ;
+}
 </style>
