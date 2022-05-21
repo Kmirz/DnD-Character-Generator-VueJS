@@ -1,7 +1,7 @@
 <template>
   <Modal :itemContents="itemContents" :itemName="itemName" />
 
-  <div class="container">
+  <div class="container py-3">
     <h1>DnD Character Generator!</h1>
     <h2 style="padding: 10px">Choose your class and see what you get</h2>
 
@@ -37,6 +37,7 @@
       </div>
 
       <ProficienciesList
+        class="proficiencies"
         :numProfficiences="numProfficiences"
         :className="className"
         @showModal="updateModal"
@@ -47,16 +48,19 @@
         </button>
       </div>
 
-      <StatBoxes
-        class="d-flex my-5 justify-content-center"
-        :statValues="statValues"
-      />
+      <div v-if="showStats" id="statBoxesWrapper">
+        <StatBoxes
+          id="statBoxes"
+          class="d-flex my-5 justify-content-center"
+          :statValues="statValues"
+        />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, nextTick } from "vue";
 
 import Modal from "./Modal.vue";
 import ClassSelector from "./ClassSelector.vue";
@@ -68,6 +72,8 @@ export default {
   components: { Modal, ClassSelector, ProficienciesList, StatBoxes },
   setup() {
     const characterName = ref("");
+
+    const characterRace = ref("");
 
     onMounted(() => {
       let sampleNames = [
@@ -85,25 +91,44 @@ export default {
     const className = ref("Barbarian");
     const itemContents = ref("No Data");
 
+    const showStats = ref(false);
+
     const itemName = ref("No Data");
 
     const numProfficiences = ref(2);
 
     const statValues = ref([]);
 
-    function rollStats() {
+    async function rollStats() {
       // console.log("clicked");
-      statValues.value = generateStats();
+      let timesRun = 0;
+
+      showStats.value = true;
+
+      await nextTick();
+
+      let elmnt = document.querySelector("#statBoxesWrapper");
+      elmnt.scrollIntoView(true);
+
+      let animateRoll = setInterval(() => {
+        generateStats();
+        timesRun++;
+        if (timesRun === 45) {
+          clearInterval(animateRoll);
+        }
+      }, 10);
     }
 
     function generateStats() {
-      let statValues = [];
+      let statValuesArray = [];
 
       for (let i = 0; i < 6; i++) {
-        statValues.push(Math.floor(Math.random() * 5));
+        statValuesArray.push(Math.floor(Math.random() * 12 + 4));
       }
 
-      return statValues;
+      console.log(statValuesArray);
+
+      statValues.value = statValuesArray;
     }
 
     function updateModal(itemInfo) {
@@ -131,6 +156,8 @@ export default {
       itemName,
       statValues,
       characterName,
+      characterRace,
+      showStats,
     };
   },
 };
@@ -153,15 +180,27 @@ ul li:before {
   left: 0;
 }
 
-@media (min-width: 768px) {
+.heroName {
+  height: 100px;
+}
+
+/* @media (min-width: 768px) {
   .heroName {
     height: 100px;
   }
-}
+} */
 
 @media (max-width: 768px) {
+  .nes-container {
+    font-size: 10px;
+  }
+
+  .row {
+    margin-bottom: -28px;
+  }
+
   .heroName {
-    height: 170px;
+    height: 75px;
   }
 }
 

@@ -44,6 +44,12 @@ button {
 
     @media (max-width: 768px) {
       z-index: -1;
+      padding: 0rem;
+      padding-left: 4rem;
+
+      .nes-container.is-rounded {
+        padding: 1rem;
+      }
     }
   }
 }
