@@ -6,8 +6,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "devstart": "nodemon app/server.js",
-    "start": "node app/server.js",
+    "devstart": "nodemon server.js",
+    "start": "node server.js",
     "serve": "serve -s dist -l 3002"
   },
   "dependencies": {
