@@ -1,13 +1,30 @@
-require("dotenv").config();
-
-const cors = require("cors");
 const express = require("express");
+const router = express.Router();
+const http = require("http");
+const fs = require("fs");
+const path = require("path");
+
 const { PDFDocument } = require("pdf-lib");
 const { readFile, writeFile } = require("fs/promises");
 
-const PDFRouter = require("./Routes/getPDF");
+// Getting PDF File
+router.get("/getPDF", async (req, res) => {
+  try {
+    const pdfFile = await createPdf(
+      "./app/Routes/PDFs/5E_CharacterSheet_Fillable.pdf",
+      "output.pdf"
+    );
+    console.log(pdfFile);
 
-const app = express();
+    res.set({
+      "Content-Type": "application/pdf",
+      "Content-Length": pdfFile.length,
+    });
+    res.send(pdfFile);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 
 async function createPdf(input, output) {
   try {
@@ -33,8 +50,10 @@ async function createPdf(input, output) {
     //Modify doc, fill out the form...
 
     const pdfBytes = await pdfDoc.save();
+    // console.log(pdfBytes);
+    // await writeFile(output, pdfBytes);
 
-    await writeFile(output, pdfBytes);
+    return Buffer.from(pdfBytes.buffer, "binary");
 
     console.log("PDF created!");
   } catch (err) {
@@ -42,11 +61,4 @@ async function createPdf(input, output) {
   }
 }
 
-app.use(cors());
-app.use(express.json());
-app.use("/getPDF", PDFRouter);
-app.use(express.static("public"));
-
-console.log("Server Started");
-
-app.listen(process.env.PORT || 3001, () => console.log("Server Started"));
+module.exports = router;
