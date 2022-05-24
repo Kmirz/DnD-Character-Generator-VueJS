@@ -62,6 +62,9 @@
 <script>
 import { ref, onMounted, nextTick } from "vue";
 
+import { useContext } from "../stores/characterData";
+import { storeToRefs } from "pinia";
+
 import Modal from "./Modal.vue";
 import ClassSelector from "./ClassSelector.vue";
 import ProficienciesList from "./ProficienciesList.vue";
@@ -74,6 +77,9 @@ export default {
     const characterName = ref("");
 
     const characterRace = ref("");
+
+    const characterData = useContext();
+    const { characterSheetURL } = storeToRefs(characterData);
 
     onMounted(() => {
       let sampleNames = [
@@ -97,6 +103,8 @@ export default {
 
     const numProfficiences = ref(2);
 
+    let prevCharacterURL = "";
+
     const statValues = ref([]);
 
     async function rollStats() {
@@ -117,6 +125,44 @@ export default {
           clearInterval(animateRoll);
         }
       }, 10);
+
+      function showFile(blob) {
+        // It is necessary to create a new blob object with mime-type explicitly set
+        // otherwise only Chrome works like it should
+        var newBlob = new Blob([blob], { type: "application/pdf" });
+
+        if (prevCharacterURL) {
+          window.URL.revokeObjectURL(prevCharacterURL);
+          console.log("Purging previous URL");
+        }
+
+        // For other browsers:
+        // Create a link pointing to the ObjectURL containing the blob.
+        const newURL = window.URL.createObjectURL(newBlob);
+
+        console.log(newURL);
+
+        prevCharacterURL = newURL;
+
+        return newURL;
+      }
+
+      let data = { name: characterName.value };
+
+      console.log(characterName.value);
+
+      let options = {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data), // body data type must match "Content-Type" header
+      };
+
+      characterSheetURL.value = await fetch("api/getPDF", options)
+        .then((r) => r.blob())
+        .then(showFile);
     }
 
     function generateStats() {
@@ -158,6 +204,7 @@ export default {
       characterName,
       characterRace,
       showStats,
+      characterSheetURL,
     };
   },
 };

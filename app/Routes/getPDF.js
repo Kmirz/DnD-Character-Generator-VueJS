@@ -8,12 +8,13 @@ const { PDFDocument } = require("pdf-lib");
 const { readFile, writeFile } = require("fs/promises");
 
 // Getting PDF File
-router.get("/getPDF", async (req, res) => {
+router.post("/getPDF", async (req, res) => {
   try {
-    const pdfFile = await createPdf(
-      "./app/Routes/PDFs/5E_CharacterSheet_Fillable.pdf",
-      "output.pdf"
-    );
+    const characterData = { name: req.body.name };
+
+    console.log(req.body.name);
+
+    const pdfFile = await createPdf("./app/Routes/PDFs/5E_CharacterSheet_Fillable.pdf", characterData);
     console.log(pdfFile);
 
     res.set({
@@ -26,7 +27,7 @@ router.get("/getPDF", async (req, res) => {
   }
 });
 
-async function createPdf(input, output) {
+async function createPdf(input, characterData) {
   try {
     const pdfDoc = await PDFDocument.load(await readFile(input));
 
@@ -36,7 +37,7 @@ async function createPdf(input, output) {
 
     let example = "";
 
-    form.getTextField("CharacterName").setText("Jamie Lee");
+    form.getTextField("CharacterName").setText(characterData.name);
     form
       .getTextField("Features and Traits")
       .setText(
