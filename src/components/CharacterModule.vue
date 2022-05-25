@@ -29,8 +29,8 @@
               class="nes"
             >
               <option value="" disabled selected hidden>Select...</option>
-              <option value="0">Elf</option>
-              <option value="1">Human</option>
+              <option value="Elf">Elf</option>
+              <option value="Human">Human</option>
             </select>
           </div>
         </div>
@@ -126,6 +126,18 @@ export default {
         }
       }, 10);
 
+      function generateStats() {
+        let statValuesArray = [];
+
+        for (let i = 0; i < 6; i++) {
+          statValuesArray.push(Math.floor(Math.random() * 12 + 4));
+        }
+
+        console.log(statValuesArray);
+
+        statValues.value = statValuesArray;
+      }
+
       function showFile(blob) {
         // It is necessary to create a new blob object with mime-type explicitly set
         // otherwise only Chrome works like it should
@@ -147,9 +159,16 @@ export default {
         return newURL;
       }
 
-      let data = { name: characterName.value };
+      let statArray = statValues.value;
 
-      console.log(characterName.value);
+      let data = {
+        name: characterName.value,
+        className: className.value,
+        characterRace: characterRace.value,
+        statValues: statArray,
+      };
+
+      console.log("statvalues", statArray);
 
       let options = {
         method: "POST",
@@ -163,18 +182,6 @@ export default {
       characterSheetURL.value = await fetch("api/getPDF", options)
         .then((r) => r.blob())
         .then(showFile);
-    }
-
-    function generateStats() {
-      let statValuesArray = [];
-
-      for (let i = 0; i < 6; i++) {
-        statValuesArray.push(Math.floor(Math.random() * 12 + 4));
-      }
-
-      console.log(statValuesArray);
-
-      statValues.value = statValuesArray;
     }
 
     function updateModal(itemInfo) {
