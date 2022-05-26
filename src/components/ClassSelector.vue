@@ -29,13 +29,21 @@
 
 <script>
 import { ref } from "vue";
+
+import { useContext } from "../stores/characterData";
+import { storeToRefs } from "pinia";
+
 export default {
   name: "ClassSelector",
   emits: ["classSelected"],
   setup(props, context) {
-    const imageReference = ref("./dnd-icons/Barbarian.PNG");
-    let characterSelected = 0;
-    const selectedCharacterName = ref("Barbarian");
+    const storeData = useContext();
+    const {
+      characterSelected,
+      imageReference,
+      selectedCharacterName,
+      showStats,
+    } = storeToRefs(storeData);
 
     const characterReferences = [
       {
@@ -52,29 +60,40 @@ export default {
 
     function clickRight() {
       // console.log("right button clicked");
-      if (characterSelected === characterReferences.length - 1) {
-        characterSelected = 0;
+      if (characterSelected.value === characterReferences.length - 1) {
+        characterSelected.value = 0;
       } else {
-        characterSelected++;
+        characterSelected.value++;
       }
 
-      imageReference.value = characterReferences[characterSelected].image;
-      selectedCharacterName.value = characterReferences[characterSelected].name;
-      context.emit("classSelected", characterReferences[characterSelected]);
+      imageReference.value = characterReferences[characterSelected.value].image;
+      selectedCharacterName.value =
+        characterReferences[characterSelected.value].name;
+      context.emit(
+        "classSelected",
+        characterReferences[characterSelected.value]
+      );
+
+      showStats.value = false;
     }
 
     function clickLeft() {
       // console.log("left button clicked");
 
-      if (characterSelected === 0) {
-        characterSelected = characterReferences.length - 1;
+      if (characterSelected.value === 0) {
+        characterSelected.value = characterReferences.length - 1;
       } else {
-        characterSelected--;
+        characterSelected.value--;
       }
 
-      imageReference.value = characterReferences[characterSelected].image;
-      selectedCharacterName.value = characterReferences[characterSelected].name;
-      context.emit("classSelected", characterReferences[characterSelected]);
+      imageReference.value = characterReferences[characterSelected.value].image;
+      selectedCharacterName.value =
+        characterReferences[characterSelected.value].name;
+      context.emit(
+        "classSelected",
+        characterReferences[characterSelected.value]
+      );
+      showStats.value = false;
     }
 
     // expose to template and other options API hooks
@@ -83,6 +102,7 @@ export default {
       clickRight,
       clickLeft,
       selectedCharacterName,
+      characterSelected,
     };
   },
 };

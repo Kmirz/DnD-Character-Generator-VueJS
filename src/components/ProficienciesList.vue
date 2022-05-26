@@ -16,6 +16,9 @@
 import { ref, watchEffect } from "vue";
 import ListContent from "./ListContent.vue";
 
+import { useContext } from "../stores/characterData";
+import { storeToRefs } from "pinia";
+
 export default {
   name: "ProficienciesList",
   props: {
@@ -25,19 +28,8 @@ export default {
   components: { ListContent },
   emits: ["showModal"],
   setup(props) {
-    const proficiencyList = ref([
-      "medium-armor",
-      "bagpipes",
-      "saving-throw-str",
-      "shortswords",
-    ]);
-
-    watchEffect(() => {
-      //   console.log(`name is: ` + props.numProfficiences);
-      // console.log(props.numProfficiences);
-      // console.log(props.className);
-      generateProfficienciesList(props.numProfficiences, props.className);
-    });
+    const storeData = useContext();
+    const { proficiencyList } = storeToRefs(storeData);
 
     async function generateProfficienciesList(numProfficiences, className) {
       //Obtain content reference from API
@@ -56,8 +48,8 @@ export default {
 
       //Generate random selection of proficiencies
 
-      proficiencyList.value = [];
       proficiencyListFull = proficiencyListFull.results;
+      proficiencyList.value = [];
 
       for (let i = numProfficiences; i--; i < 0) {
         let randomNumber = Math.floor(
@@ -77,7 +69,7 @@ export default {
         console.log("num of profs:", i);
       }
     }
-    return { proficiencyList };
+    return { proficiencyList, generateProfficienciesList };
   },
 };
 </script>

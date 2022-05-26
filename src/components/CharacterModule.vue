@@ -3,7 +3,9 @@
 
   <div class="container py-3">
     <h1>DnD Character Generator!</h1>
-    <h2 style="padding: 10px">Choose your class and see what you get</h2>
+    <h2 class="subheader" style="padding: 10px">
+      Choose your class and see what you get
+    </h2>
 
     <div class="nes nes-container is-rounded">
       <div class="row">
@@ -28,7 +30,6 @@
               id="default_select"
               class="nes"
             >
-              <option value="" disabled selected hidden>Select...</option>
               <option value="Elf">Elf</option>
               <option value="Human">Human</option>
             </select>
@@ -41,10 +42,22 @@
         :numProfficiences="numProfficiences"
         :className="className"
         @showModal="updateModal"
+        ref="proficienciesID"
       />
       <div class="d-flex justify-content-center mt-5">
-        <button @click="rollStats" class="nes nes-btn is-primary">
+        <button
+          v-if="!showStats"
+          @click="rollStats"
+          class="nes nes-btn is-primary"
+        >
           ROLL STATS!
+        </button>
+        <button
+          v-if="showStats"
+          @click="rollStats"
+          class="nes nes-btn is-success"
+        >
+          RE-ROLL STATS!
         </button>
       </div>
 
@@ -60,7 +73,7 @@
 </template>
 
 <script>
-import { ref, onMounted, nextTick } from "vue";
+import { ref, onMounted, nextTick, toRaw } from "vue";
 
 import { useContext } from "../stores/characterData";
 import { storeToRefs } from "pinia";
@@ -74,12 +87,20 @@ export default {
   name: "CharacterModule",
   components: { Modal, ClassSelector, ProficienciesList, StatBoxes },
   setup() {
-    const characterName = ref("");
+    // const characterName = ref("");
 
-    const characterRace = ref("");
+    // const characterRace = ref("");
 
-    const characterData = useContext();
-    const { characterSheetURL } = storeToRefs(characterData);
+    const storeData = useContext();
+    const {
+      characterName,
+      characterRace,
+      characterSheetURL,
+      className,
+      statValues,
+      showStats,
+      proficiencyList,
+    } = storeToRefs(storeData);
 
     onMounted(() => {
       let sampleNames = [
@@ -90,14 +111,13 @@ export default {
         "Katy 'The Captain' Janeway",
       ];
 
-      characterName.value =
-        sampleNames[Math.floor(Math.random() * sampleNames.length)];
+      if (!characterName.value) {
+        characterName.value =
+          sampleNames[Math.floor(Math.random() * sampleNames.length)];
+      }
     });
 
-    const className = ref("Barbarian");
     const itemContents = ref("No Data");
-
-    const showStats = ref(false);
 
     const itemName = ref("No Data");
 
@@ -105,14 +125,21 @@ export default {
 
     let prevCharacterURL = "";
 
-    const statValues = ref([]);
+    const proficienciesID = ref();
 
     async function rollStats() {
       // console.log("clicked");
       let timesRun = 0;
 
+      //generates proficiency list via proficiencyList component method
+      proficienciesID.value.generateProfficienciesList(
+        numProfficiences.value,
+        className.value
+      );
+
       showStats.value = true;
 
+      //waits for the dom to update to show animation
       await nextTick();
 
       let elmnt = document.querySelector("#statBoxesWrapper");
@@ -126,6 +153,32 @@ export default {
         }
       }, 10);
 
+      //Pause the data sent to API until after the 'rolling' occurs, due to the animation being done via set interval
+      setTimeout(async () => {
+        console.log("runners", characterRace.value);
+
+        let data = {
+          name: characterName.value,
+          className: className.value,
+          characterRace: characterRace.value,
+          statValues: statValues.value,
+          proficiencyList: proficiencyList.value,
+        };
+
+        let options = {
+          method: "POST",
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data), // body data type must match "Content-Type" header
+        };
+
+        characterSheetURL.value = await fetch("api/getPDF", options)
+          .then((r) => r.blob())
+          .then(showFile);
+      }, 460);
+
       function generateStats() {
         let statValuesArray = [];
 
@@ -133,7 +186,7 @@ export default {
           statValuesArray.push(Math.floor(Math.random() * 12 + 4));
         }
 
-        console.log(statValuesArray);
+        // console.log(statValuesArray);
 
         statValues.value = statValuesArray;
       }
@@ -158,30 +211,6 @@ export default {
 
         return newURL;
       }
-
-      let statArray = statValues.value;
-
-      let data = {
-        name: characterName.value,
-        className: className.value,
-        characterRace: characterRace.value,
-        statValues: statArray,
-      };
-
-      console.log("statvalues", statArray);
-
-      let options = {
-        method: "POST",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data), // body data type must match "Content-Type" header
-      };
-
-      characterSheetURL.value = await fetch("api/getPDF", options)
-        .then((r) => r.blob())
-        .then(showFile);
     }
 
     function updateModal(itemInfo) {
@@ -212,6 +241,7 @@ export default {
       characterRace,
       showStats,
       characterSheetURL,
+      proficienciesID,
     };
   },
 };
@@ -272,7 +302,7 @@ h2 {
   text-align: center;
 }
 
-h2 {
+.subheader {
   font-size: 15px;
 }
 </style>

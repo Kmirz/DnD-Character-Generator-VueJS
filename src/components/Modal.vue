@@ -26,4 +26,8 @@ export default {
 .nes-dialog {
   margin: auto;
 }
+
+p {
+  white-space: pre-wrap;
+}
 </style>

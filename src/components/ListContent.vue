@@ -38,14 +38,28 @@ export default {
       //Obtain contents from API
       referenceURL = "https://www.dnd5eapi.co" + referenceURL;
 
-      // console.log(referenceURL);
+      console.log(referenceURL);
 
-      const proficiencyContent = await fetch(referenceURL)
+      contents.value = await fetch(referenceURL)
         .then((res) => res.json())
-        .then((res) => (contents.value = res.desc[0]))
-        .catch((err) => console.log(err));
+        .then((res) => {
+          let messageArray = [];
 
-      // console.log(contents.value);
+          if (res.desc) {
+            messageArray.push(`Description: ${res.desc[0]}`);
+          } else {
+            messageArray.push("Description: No Description Available");
+          }
+
+          if (res.equipment) {
+            messageArray.push(
+              `Includes: ${res.equipment.map((e) => e.name).join(", ")}`
+            );
+          }
+
+          return messageArray.join("\r\n\r\n");
+        })
+        .catch((err) => console.log(err));
 
       context.emit("showModal", {
         itemName: itemName,

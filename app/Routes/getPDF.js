@@ -34,21 +34,30 @@ async function createPdf(input, characterData) {
 
     const form = pdfDoc.getForm();
 
-    let example = "";
-
     form.getTextField("CharacterName").setText(characterData.name);
 
     form.getTextField("Race ").setText(characterData.characterRace);
 
     form.getTextField("ClassLevel").setText(`${characterData.className}  LVL: 1`);
 
-    form.getTextField("STR").setText(String(characterData.statValues[0]));
+    let statArray = ["STR", "DEX", "CON", "INT", "WIS", "CHA"];
 
-    form
-      .getTextField("Features and Traits")
-      .setText(
-        "Visual Studio Code comes with Emmet preinstalled. Emmet is a plugin that helps you write HTML and CSS easier using shortcuts.Thanks to Emmet it is really easy to generate lorem ipsum. You no longer have to search for a lorem ipsum online generator."
-      );
+    characterData.statValues.forEach((element, id) => {
+      form.getTextField(statArray[id]).setText(String(element));
+    });
+
+    //Calculated ability score from stats
+    let abilityScoreArray = ["STRmod", "DEXmod ", "CONmod", "INTmod", "WISmod", "CHamod"];
+
+    characterData.statValues.forEach((element, id) => {
+      let abilityScore = Math.floor((element - 10) / 2);
+
+      abilityScore = abilityScore >= 0 ? `+${abilityScore}` : String(abilityScore);
+
+      form.getTextField(abilityScoreArray[id]).setText(abilityScore);
+    });
+
+    form.getTextField("Features and Traits").setText(characterData.proficiencyList.join("\r\n"));
 
     //Modify doc, fill out the form...
 
