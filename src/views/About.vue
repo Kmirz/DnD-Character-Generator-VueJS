@@ -48,4 +48,10 @@ embed {
 .nes {
   border-image-repeat: unset;
 }
+
+@media (max-width: 768px) {
+  embed {
+    display: none;
+  }
+}
 </style>

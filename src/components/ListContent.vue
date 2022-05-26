@@ -45,7 +45,7 @@ export default {
         .then((res) => {
           let messageArray = [];
 
-          if (res.desc) {
+          if (res.desc && res.desc.length > 0) {
             messageArray.push(`Description: ${res.desc[0]}`);
           } else {
             messageArray.push("Description: No Description Available");

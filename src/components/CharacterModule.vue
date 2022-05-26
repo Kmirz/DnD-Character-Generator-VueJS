@@ -131,16 +131,16 @@ export default {
       // console.log("clicked");
       let timesRun = 0;
 
+      showStats.value = true;
+
+      //waits for the dom to update to show animation
+      await nextTick();
+
       //generates proficiency list via proficiencyList component method
       proficienciesID.value.generateProfficienciesList(
         numProfficiences.value,
         className.value
       );
-
-      showStats.value = true;
-
-      //waits for the dom to update to show animation
-      await nextTick();
 
       let elmnt = document.querySelector("#statBoxesWrapper");
       elmnt.scrollIntoView(true);
